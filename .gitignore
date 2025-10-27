@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+
+# Data files (large synthetic datasets)
+data/raw/*
+data/processed/*
+data/synthetic/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/synthetic/.gitkeep
+
+# Model files (can be large)
+models/**/*.pth
+models/**/*.h5
+*.pkl
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Thumbnails
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Test outputs
+tests/*.png
+tests/*.jpg
+tests/*.pdf
+docs/development_plan.md
+docs/Phase1_Checklist.md
+docs/Phase2_Specs.md
+docs/dev notes/development_plan.md
+docs/dev notes/Phase1_Checklist.md
+docs/dev notes/Phase2_Specs.md
