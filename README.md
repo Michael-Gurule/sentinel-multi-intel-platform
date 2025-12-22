@@ -125,14 +125,12 @@ sentinel-multi-intel-platform/
 - CUDA (optional, for GPU acceleration)
 
 ### Setup
-```bash
+```
 # Clone repository
-git clone https://github.com/yourusername/sentinel-multi-intel-platform.git
+git clone https://github.com/michael-gurule/sentinel-multi-intel-platform.git
 cd sentinel-multi-intel-platform
 
 # Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install torch torchvision
@@ -389,14 +387,9 @@ python tests/test_9_full_system.py
 **Signal Processing:**
 - S. Kay, "Fundamentals of Statistical Signal Processing: Detection Theory"
 
-## Contributing
-
-This is a portfolio project demonstrating technical capabilities for employment opportunities in defense and aerospace sectors.
-
-## 📄 License
+## License
 
 This project is provided as a demonstration of technical capabilities. All code is original work.
-
 ---
 
 ## Contact
