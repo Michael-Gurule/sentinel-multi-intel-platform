@@ -18,55 +18,6 @@ from ..models.cnn_classifier import OPIREventCNN
 
 
 class OPIRDataset(Dataset):
-    """PyTorch Dataset that loads from folder structure"""
-
-    def __init__(self, root_dir: str, transform=None):
-        """
-        Args:
-            root_dir: Path to train/test/validation folder
-            transform: Optional transform function
-        """
-        self.root_dir = Path(root_dir)
-        self.transform = transform
-        
-        # Class names from folders
-        self.class_folders = sorted([d.name for d in self.root_dir.iterdir() if d.is_dir()])
-        self.class_to_idx = {cls: idx for idx, cls in enumerate(self.class_folders)}
-        
-        # Load all file paths and labels
-        self.samples = []
-        for class_name in self.class_folders:
-            class_path = self.root_dir / class_name
-            class_idx = self.class_to_idx[class_name]
-            
-            for file_path in class_path.glob('*.npy'):
-                self.samples.append((str(file_path), class_idx))
-        
-        print(f"Loaded {len(self.samples)} samples from {root_dir}")
-        print(f"Classes: {self.class_folders}")
-    
-    def __len__(self) -> int:
-        return len(self.samples)
-    
-    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        file_path, label = self.samples[idx]
-        
-        # Load signal
-        signal = np.load(file_path)
-        
-        # Normalize
-        signal = (signal - np.mean(signal)) / (np.std(signal) + 1e-8)
-        
-        if self.transform:
-            signal = self.transform(signal)
-        
-        # Convert to tensor [1, time_steps]
-        signal_tensor = torch.FloatTensor(signal).unsqueeze(0)
-        label_tensor = torch.LongTensor([label])
-        
-        return signal_tensor, label_tensor
-    
-class OPIRDataset(Dataset):
     """PyTorch Dataset for OPIR signals"""
     
     def __init__(
@@ -103,57 +54,6 @@ class OPIRDataset(Dataset):
         label_tensor = torch.LongTensor([label])
         
         return signal_tensor, label_tensor
-
-
-# ADD THIS NEW CLASS HERE
-class OPIRFolderDataset(Dataset):
-    """PyTorch Dataset that loads from folder structure"""
-    
-    def __init__(self, root_dir: str, transform=None):
-        """
-        Args:
-            root_dir: Path to train/test/validation folder
-            transform: Optional transform function
-        """
-        self.root_dir = Path(root_dir)
-        self.transform = transform
-        
-        # Class names from folders
-        self.class_folders = sorted([d.name for d in self.root_dir.iterdir() if d.is_dir()])
-        self.class_to_idx = {cls: idx for idx, cls in enumerate(self.class_folders)}
-        
-        # Load all file paths and labels
-        self.samples = []
-        for class_name in self.class_folders:
-            class_path = self.root_dir / class_name
-            class_idx = self.class_to_idx[class_name]
-            
-            for file_path in class_path.glob('*.npy'):
-                self.samples.append((str(file_path), class_idx))
-        
-        print(f"Loaded {len(self.samples)} samples from {root_dir}")
-        print(f"Classes: {self.class_folders}")
-    
-    def __len__(self) -> int:
-        return len(self.samples)
-    
-    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        file_path, label = self.samples[idx]
-        
-        # Load signal
-        signal = np.load(file_path)
-        
-        # Normalize
-        signal = (signal - np.mean(signal)) / (np.std(signal) + 1e-8)
-        
-        if self.transform:
-            signal = self.transform(signal)
-        
-        # Convert to tensor [1, time_steps]
-        signal_tensor = torch.FloatTensor(signal).unsqueeze(0)
-        label_tensor = torch.LongTensor([label])
-        
-        return signal_tensor, label_tensor    
 
 
 class EarlyStopping:
@@ -214,7 +114,6 @@ class ModelTrainer:
             mode='min',
             factor=0.5,
             patience=5,
-            verbose=True
         )
         
         self.history = {
@@ -394,25 +293,43 @@ class ModelTrainer:
         self.history = checkpoint.get('history', self.history)
 
 
-def prepare_data_loaders_from_folders(
-    train_dir: str,
-    val_dir: str,
-    batch_size: int = 32
+def prepare_data_loaders(
+    signals: np.ndarray,
+    labels: np.ndarray,
+    train_split: float = 0.8,
+    batch_size: int = 32,
+    shuffle: bool = True
 ) -> Tuple[DataLoader, DataLoader]:
     """
-    Prepare train and validation data loaders from folder structure
+    Prepare train and validation data loaders
     
     Args:
-        train_dir: Path to training data folder
-        val_dir: Path to validation data folder
+        signals: All signal data [N, time_steps]
+        labels: All labels [N]
+        train_split: Fraction for training
         batch_size: Batch size
+        shuffle: Whether to shuffle data
         
     Returns:
         Tuple of (train_loader, val_loader)
     """
+    # Split data
+    n_samples = len(signals)
+    n_train = int(n_samples * train_split)
+    
+    if shuffle:
+        indices = np.random.permutation(n_samples)
+        signals = signals[indices]
+        labels = labels[indices]
+    
+    train_signals = signals[:n_train]
+    train_labels = labels[:n_train]
+    val_signals = signals[n_train:]
+    val_labels = labels[n_train:]
+    
     # Create datasets
-    train_dataset = OPIRFolderDataset(train_dir)
-    val_dataset = OPIRFolderDataset(val_dir)
+    train_dataset = OPIRDataset(train_signals, train_labels)
+    val_dataset = OPIRDataset(val_signals, val_labels)
     
     # Create data loaders
     train_loader = DataLoader(
@@ -431,9 +348,8 @@ def prepare_data_loaders_from_folders(
     return train_loader, val_loader
 
 
-def train_model_from_folders(
-    train_dir: str,
-    val_dir: str,
+def train_model_from_data(
+    data_path: str,
     output_dir: str,
     num_epochs: int = 50,
     batch_size: int = 32,
@@ -441,11 +357,10 @@ def train_model_from_folders(
     device: str = 'cpu'
 ) -> Dict:
     """
-    Complete training pipeline from folder structure
+    Complete training pipeline from data file
     
     Args:
-        train_dir: Path to training data folder (e.g., 'data/synthetic/opir/train')
-        val_dir: Path to validation data folder (e.g., 'data/synthetic/opir/validation')
+        data_path: Path to NPZ file with signals and labels
         output_dir: Directory for outputs
         num_epochs: Training epochs
         batch_size: Batch size
@@ -455,27 +370,26 @@ def train_model_from_folders(
     Returns:
         Training history
     """
-    print("Loading data from folders...")
+    print("Loading data...")
+    data = np.load(data_path)
+    signals = data['signals']
+    labels = data['labels']
+    
+    print(f"Data shape: {signals.shape}")
+    print(f"Labels shape: {labels.shape}")
+    print(f"Class distribution: {np.bincount(labels)}")
     
     # Prepare data loaders
-    train_loader, val_loader = prepare_data_loaders_from_folders(
-        train_dir=train_dir,
-        val_dir=val_dir,
+    print("\nPreparing data loaders...")
+    train_loader, val_loader = prepare_data_loaders(
+        signals,
+        labels,
         batch_size=batch_size
     )
     
-    # Get number of classes from dataset
-    num_classes = len(train_loader.dataset.class_folders)
-    print(f"\nNumber of classes: {num_classes}")
-    
-    # Get signal length from first sample
-    sample_signal, _ = train_loader.dataset[0]
-    signal_length = sample_signal.shape[1]
-    print(f"Signal length: {signal_length}")
-    
     # Initialize model
     print("\nInitializing model...")
-    model = OPIREventCNN(input_length=signal_length, num_classes=num_classes)
+    model = OPIREventCNN(input_length=signals.shape[1])
     
     # Initialize trainer
     trainer = ModelTrainer(
@@ -497,15 +411,6 @@ def train_model_from_folders(
     history_path = Path(output_dir) / 'training_history.json'
     with open(history_path, 'w') as f:
         json.dump(history, f, indent=2)
-    
-    # Save class mapping
-    class_mapping = {
-        'class_to_idx': train_loader.dataset.class_to_idx,
-        'idx_to_class': {v: k for k, v in train_loader.dataset.class_to_idx.items()}
-    }
-    mapping_path = Path(output_dir) / 'class_mapping.json'
-    with open(mapping_path, 'w') as f:
-        json.dump(class_mapping, f, indent=2)
     
     print(f"\nTraining complete. Outputs saved to {output_dir}")
     
