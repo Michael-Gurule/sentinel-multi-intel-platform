@@ -119,11 +119,6 @@ sentinel-multi-intel-platform/
 ```
 ## Installation
 
-### Prerequisites
-- Python 3.8+
-- PyTorch 2.0+
-- CUDA (optional, for GPU acceleration)
-
 ### Setup
 ```
 # Clone repository
@@ -390,7 +385,6 @@ python tests/test_9_full_system.py
 ## License
 
 This project is provided as a demonstration of technical capabilities. All code is original work.
----
 
 ## Contact
 
