@@ -1,7 +1,13 @@
-# SENTINEL - Multi-INT Early Warning Platform
 
-**Advanced multi-intelligence fusion system combining Overhead Persistent Infrared (OPIR) thermal detection with Radio Frequency (RF) geolocation for real-time threat detection and tracking**
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d5796969-edd6-41fc-bdaa-2948163e5402" alt="Alt text description">
+<p align="center">
+  <strong>Multi-Sensor Fusion for Defense Applications</strong><br>
+  
+<p align="center">  
+Advanced multi-intelligence fusion system combining Overhead Persistent Infrared (OPIR) thermal detection with Radio Frequency (RF) geolocation for real-time threat detection and tracking
+</p>  
+<br>
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white)](#)
@@ -11,7 +17,7 @@
 
 ## Project Overview
 
-SENTINEL is a production-grade machine learning platform designed for Defense applications, demonstrating expertise in sensor fusion, geolocation algorithms, and multi-sensor tracking. The system integrates thermal event detection with RF signal processing to provide comprehensive situational awareness.
+SENTINEL is a production-grade Machine Learning platform designed for Defense applications, demonstrating expertise in Sensor Fusion, Geolocation Algorithms, and Multi-Sensor Tracking. The system integrates thermal event detection with RF signal processing to provide comprehensive situational awareness.
 
 **Key Capabilities:**
 - Real-time OPIR thermal event detection and classification
@@ -20,7 +26,29 @@ SENTINEL is a production-grade machine learning platform designed for Defense ap
 - Track quality assessment and uncertainty quantification
 - Scalable architecture supporting multiple sensor modalities
 
-⚠️ **Note:** This project uses ONLY synthetic data and public datasets. All scenarios are simulated. ⚠️
+## Why Sensor Fusion Matters: The Multiplicative Effect
+
+Consider a scenario: An OPIR satellite detects a thermal anomaly consistent with a missile launch. Confidence: 70%. Simultaneously, an RF geolocation system identifies an emitter at coordinates with 50-meter uncertainty. Confidence: 80%.
+
+**Naive approach**: Report both independently.
+
+> **Result:** Analysts must manually correlate information, introducing delays and potential errors.
+
+**Fusion approach**: Combine measurements using covariance weighting.
+
+> **Result**: Single track with 95% confidence, 15-meter position uncertainty, and classified event type.
+
+The mathematics is straightforward but powerful. Using covariance intersection, the fused position uncertainty becomes:
+<br>
+
+
+<p align="center"> 
+<img src="https://latex.codecogs.com/png.latex?%5Chuge%20P_{fused}%20=%20(P_{OPIR}^{-1}%20+%20P_{RF}^{-1})^{-1}">
+</p>  
+
+Where `P` represents position covariance matrices. The fused uncertainty is **always lower** than either individual measurement. This isn't just combining data; it's extracting information that neither sensor could provide alone.
+
+---
 
 ##  System Architecture
 
@@ -386,10 +414,13 @@ python tests/test_9_full_system.py
 
 This project is provided as a demonstration of technical capabilities. All code is original work.
 
-## Contact
+
+## Contributing
+
+This is a portfolio project. For questions or collaboration:
 
 **Michael Gurule**  
-Data Scientist | ML Engineer  
+Data Scientist | ML Engineer 
 
 - [![Email Me](https://img.shields.io/badge/EMAIL-8A2BE2)](michaelgurule1164@gmail.com)
 - [![LinkedIn](https://custom-icon-badges.demolab.com/badge/LinkedIn-0A66C2?logo=linkedin-white&logoColor=fff)](www.linkedin.com/in/michael-j-gurule-447aa2134)
@@ -397,16 +428,12 @@ Data Scientist | ML Engineer
 
 ---
 
-## ⚠️ Security & Ethics Notice
-
-This project:
-- Uses ONLY synthetic/simulated data
-- Does NOT process classified information
-- Does NOT access real sensor data
-- Is for EDUCATIONAL purposes demonstrating signal processing and fusion techniques
-
-All algorithms and methodologies are based on publicly available research and unclassified information.
-
----
-
-*Building production-grade intelligence systems for portfolio demonstration*
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f84b1e5c-74ff-4dcd-8049-e69f6350595b" alt="SENTINEL" width="40">
+  <br>
+  <sub>Built by Michael Gurule</sub><br>
+  <sub>Data: All algorithms and methodologies are based on publicly available research and unclassified information. (Public)</sub>
+</p>
+<p align="center">
+Building production-grade intelligence systems for portfolio demonstration
+</p>
