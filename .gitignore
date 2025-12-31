@@ -48,6 +48,9 @@ data/synthetic/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/synthetic/.gitkeep
+assets/
+docs/
+
 
 # Model files (can be large)
 models/**/*.pth
