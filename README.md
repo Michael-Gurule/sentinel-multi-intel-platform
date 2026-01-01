@@ -429,11 +429,5 @@ Data Scientist | ML Engineer
 ---
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f84b1e5c-74ff-4dcd-8049-e69f6350595b" alt="SENTINEL" width="40">
-  <br>
-  <sub>Built by Michael Gurule</sub><br>
-  <sub>Data: All algorithms and methodologies are based on publicly available research and unclassified information. (Public)</sub>
-</p>
-<p align="center">
-Building production-grade intelligence systems for portfolio demonstration
+  <img src="https://github.com/user-attachments/assets/0d69bf96-335b-4160-a202-780e8bad2d45" alt="MICHAEL GURULE">
 </p>
