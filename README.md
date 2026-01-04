@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/d5796969-edd6-41fc-bdaa-2948163e5402" alt="Alt text description">
+  <img width="500" alt="SENTINEL" src="https://github.com/user-attachments/assets/84043002-a02f-4837-9d49-f3390b61176a" />
 <p align="center">
   <strong>Multi-Sensor Fusion for Defense Applications</strong><br>
   
